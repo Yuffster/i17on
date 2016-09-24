@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+	<title>i17on</title>
+</head>
+
+<body>
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:100,300,200" rel="stylesheet">
+
+<style>
+	body {
+		width: 85%;
+		margin: auto;
+		margin-top: 24px;
+		font-family: 'Roboto';
+		font-weight: 200;
+	}
+
+	p,pre {
+		line-height: 24px;
+	}
+
+	#title {
+		font-size: 50px;
+		font-family: 'Roboto';
+		font-weight: 100;
+		line-height: 48px;
+		margin: 0;
+		height: 96px;
+	}
+
+	#title .n {
+		font-weight: 300;
+		font-style: normal;
+	}
+
+	#stage .render {
+		width: 30%;
+		float: left;
+		height: 500px;
+	}
+	#stage .render span {
+		display: none;
+	}
+
+	#stage.default .render span.default,
+	#stage.complex .render span.complex,
+	#stage.tech .render span.tech{
+		display: inline;
+	}
+
+	pre {
+		background: #efefef;
+		font-family: 'Inconsolata', monospace;
+	}
+
+	.code {
+		width: 65%;
+		padding: 2%;
+		height: 400px;
+		float: right;
+	}
+
+	.code .clause {
+		color: blue;
+		font-weight: bold;
+	}
+
+	.code .branch {
+		color: green;
+	}
+
+	.code .bracket {
+		color: aqua;
+	}
+
+	#stage.default .code #default, #stage.complex .code #complex, #stage.tech .code #tech {
+		background-color: yellow;
+		color: #000;
+		font-weight: bold;
+	}
+</style>
+
+<h1 id="title">i<span class="n">17</span>on</h1>
+
+<div id="stage" class="default">
+	<div class="render">
+
+	<h1>Hello, world!</h1>
+
+	<p style="height:200px"><em>i17on</em> is <span class="complex">an <strong>intra</strong>nationalization engine optimized for the output of dynamic documentation</span><span class="tech">a <em><strong>Markdown</strong></em>-based document system you can program</span><span class="default">a software package for dynamic text documents</span>.</p>
+
+	<p>Check it out on <a href="http://github.com/Yuffster/i17on">GitHub</a>.<p>
+
+	</div>
+
+<pre class="code">
+# Hello, world!
+
+_i17on_ is <span class="bracket">{</span>
+<div id="complex">    <span class="clause">complex</span>:
+        an *intra*nationalization engine optimized for the output of
+        dynamic documentation              
+</div>
+<div id="tech">    <span class="branch">|-</span><span class="clause">tech</span>:
+        a _*Markdown*_-based document system you can program       
+</div>
+<div id="default">    <span class="branch">|-</span>
+        a software package for dynamic text documents           
+</div>
+<span class="bracket">}</span>.
+
+Check it out on [GitHub](http://github.com/Yuffster/i17on).
+</pre>
+</div>
+
+<script>
+(function swapClass() {
+	var classes = ["default", "complex", "tech"];
+	var stage = document.getElementById('stage');
+	var current = stage.className;
+	var i = classes.indexOf(current);
+	var next = (i==classes.length-1) ? 0 : i + 1;
+	stage.className = classes[next];
+	setTimeout(swapClass, 5000);
+}());
+</script>
+
+</body>
+</html>
