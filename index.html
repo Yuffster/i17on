@@ -31,7 +31,6 @@
 		font-weight: 100;
 		line-height: 48px;
 		margin: 0;
-		height: 96px;
 	}
 
 	#title .n {
@@ -110,8 +109,10 @@
 	#stage .toggles {
 		overflow: hidden;
 	}
-	#stage .tag-toggle {
-		float: right;
+
+	#stage .toggles ul {
+		margin: 0;
+		padding: 0;
 	}
 
 	#stage .tag-toggle .instructions {
@@ -144,14 +145,6 @@
 <h1 id="title">i<span class="n">17</span>on</h1>
 
 <div id="stage" class="default">
-
-	<div class="toggles">
-		<ul class="tag-toggle">
-			<li class="instructions">Toggle Tags:</li>
-			<li class="tech"><a href="#">tech</a></li>
-			<li class="complex"><a href="#">complex</a></li>
-		</ul>
-	</div>
 
 <div class="output">
 	<div class="render">
@@ -187,6 +180,15 @@ Check it out on [GitHub](http://github.com/Yuffster/i17on).
 	</pre>
 
 </div>
+
+	<div class="toggles">
+		<ul class="tag-toggle">
+			<li class="instructions">Toggle Tags:</li>
+			<li class="tech"><a href="#">tech</a></li>
+			<li class="complex"><a href="#">complex</a></li>
+		</ul>
+	</div>
+
 </div>
 
 <script>
