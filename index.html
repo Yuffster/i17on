@@ -39,6 +39,10 @@
 		width: 100%;
 	}
 
+	#stage .output .hide-code {
+		display: none;
+	}
+
 	#stage .output .code {
 		display: none;
 	}
@@ -53,6 +57,14 @@
 		height: 400px;
 		float: right;
 		display: block;
+	}
+
+	#stage .output.code-view .hide-code {
+		display: block;
+	}
+
+	#stage .output.code-view .show-code {
+		display: none;
 	}
 
 	#stage .render span {
@@ -146,6 +158,9 @@
 
 	<p>Check it out on <a href="http://github.com/Yuffster/i17on">GitHub</a>.</p>
 
+	<p class="hide-code"><a href="#">Hide example code.</a></p>
+	<p class="show-code"><a href="#">Show example code.</a></p>
+
 	</div>
 
 	<pre class="code">
@@ -184,11 +199,28 @@ function delegate(parent, match, evt, fun) {
 	});
 }
 
+var stage = document.getElementById('stage');
+var output = stage.querySelector('.output');
+var explicitlyHidden = false;
+
 delegate('.tag-toggle', 'li a', 'click', function(e, el) {
-	var stage = document.getElementById('stage');
 	var tag = el.parentNode.className;
 	stage.className = (stage.className == tag) ? 'default' : tag; 
-	stage.querySelector('.output').classList.add('code-view');
+	if (explicitlyHidden == false) {
+		output.classList.add('code-view');
+	}
+	e.preventDefault();
+});
+
+delegate('.output', '.hide-code', 'click', function(e, el) {
+	output.classList.remove('code-view');
+	explicitlyHidden = true;
+	e.preventDefault();
+});
+
+delegate('.output', '.show-code', 'click', function(e, el) {
+	output.classList.add('code-view');
+	explicitlyHidden = false;
 	e.preventDefault();
 });
 
