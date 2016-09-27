@@ -40,6 +40,7 @@
 		float: left;
 		height: 500px;
 	}
+
 	#stage .render span {
 		display: none;
 	}
@@ -48,11 +49,13 @@
 	#stage.complex .render span.complex,
 	#stage.tech .render span.tech{
 		display: inline;
+		background-color: #FFFFDF;
 	}
 
 	pre {
 		background: #efefef;
 		font-family: 'Inconsolata', monospace;
+		overflow: hidden;
 	}
 
 	.code {
@@ -67,64 +70,119 @@
 		font-weight: bold;
 	}
 
-	.code .branch {
-		color: green;
+	#stage.default .code #default,
+	#stage.complex .code #complex,
+	#stage.tech .code #tech {
+		background-color: #FFFFDF;;
+		color: #000;
+		font-weight: 200;
 	}
 
-	.code .bracket {
+	#stage.default .code #default .clause,
+	#stage.complex .code #complex .clause,
+	#stage.tech .code #tech .clause {
 		color: aqua;
 	}
 
-	#stage.default .code #default, #stage.complex .code #complex, #stage.tech .code #tech {
-		background-color: yellow;
-		color: #000;
+	#stage .toggles {
+		overflow: hidden;
+	}
+	#stage .tag-toggle {
+		float: right;
+	}
+
+	#stage .tag-toggle .instructions {
 		font-weight: bold;
 	}
+
+	#stage .tag-toggle li {
+		display: inline-block;
+	}
+
+	#stage .tag-toggle li a {
+		text-decoration: none;
+		border-radius: 4px;
+		padding: 5px;
+		color: #000;
+	}
+
+	#stage.complex .tag-toggle li.complex a,
+	#stage.tech .tag-toggle li.tech a {
+		background: #FFFFDF;
+		color: aqua;
+	}
+
+	#stage .output {
+		overflow: hidden;
+	}
+
 </style>
 
 <h1 id="title">i<span class="n">17</span>on</h1>
 
 <div id="stage" class="default">
+
+	<div class="toggles">
+		<ul class="tag-toggle">
+			<li class="instructions">Toggle Tags:</li>
+			<li class="tech"><a href="#">tech</a></li>
+			<li class="complex"><a href="#">complex</a></li>
+		</ul>
+	</div>
+
+<div class="output">
 	<div class="render">
 
 	<h1>Hello, world!</h1>
 
 	<p style="height:200px"><em>i17on</em> is <span class="complex">an <strong>intra</strong>nationalization engine optimized for the output of dynamic documentation</span><span class="tech">a <em><strong>Markdown</strong></em>-based document system you can program</span><span class="default">a software package for dynamic text documents</span>.</p>
 
-	<p>Check it out on <a href="http://github.com/Yuffster/i17on">GitHub</a>.<p>
+	<p>Check it out on <a href="http://github.com/Yuffster/i17on">GitHub</a>.</p>
 
 	</div>
 
-<pre class="code">
+	<pre class="code">
 # Hello, world!
 
 _i17on_ is <span class="bracket">{</span>
 <div id="complex">    <span class="clause">complex</span>:
-        an *intra*nationalization engine optimized for the output of
-        dynamic documentation              
+		an *intra*nationalization engine optimized for the output of
+		dynamic documentation              
 </div>
 <div id="tech">    <span class="branch">|-</span><span class="clause">tech</span>:
-        a _*Markdown*_-based document system you can program       
+		a _*Markdown*_-based document system you can program       
 </div>
 <div id="default">    <span class="branch">|-</span>
-        a software package for dynamic text documents           
+		a software package for dynamic text documents           
 </div>
 <span class="bracket">}</span>.
 
 Check it out on [GitHub](http://github.com/Yuffster/i17on).
-</pre>
+	</pre>
+
+</div>
 </div>
 
 <script>
-(function swapClass() {
-	var classes = ["default", "complex", "tech"];
+
+function delegate(parent, match, evt, fun) {
+	parents = document.querySelectorAll(parent);
+	parents.forEach(function(scope) {
+		scope.addEventListener(evt, function bubble(e, el) {
+			if (!el) el = e.target;
+			if (el.matches && el.matches(match)) return fun(e, el);
+			var parent = el.parentNode;
+			if (parent) bubble(e, parent);
+		});
+	});
+}
+
+delegate('.tag-toggle', 'li a', 'click', function(e, el) {
 	var stage = document.getElementById('stage');
-	var current = stage.className;
-	var i = classes.indexOf(current);
-	var next = (i==classes.length-1) ? 0 : i + 1;
-	stage.className = classes[next];
-	setTimeout(swapClass, 5000);
-}());
+	var tag = el.parentNode.className;
+	stage.className = (stage.className == tag) ? 'default' : tag;
+});
+
 </script>
 
 </body>
