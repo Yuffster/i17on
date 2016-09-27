@@ -181,6 +181,7 @@ delegate('.tag-toggle', 'li a', 'click', function(e, el) {
 	var stage = document.getElementById('stage');
 	var tag = el.parentNode.className;
 	stage.className = (stage.className == tag) ? 'default' : tag;
+	e.preventDefault();
 });
 
 </script>
