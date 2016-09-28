@@ -1,18 +1,18 @@
 import unittest
-import i17on
+from i17on import translator
 
 class TranslatorTest(unittest.TestCase):
 
     debug_original = None
 
     def setUp(self):
-        self.t = i17on.Translator()
-        self.debug_original = i17on.debug_all
-        i17on.debug_all = True
+        self.t = translator.Translator()
+        self.debug_original = translator.debug_all
+        translator.debug_all = True
         self.maxDiff = None
 
     def tearDown(self):
-        i17on.debug_all = self.debug_original
+        translator.debug_all = self.debug_original
 
     def assertCondition(self, conditions, expected):
         if type(conditions) == str:
@@ -46,11 +46,11 @@ class TranslatorTest(unittest.TestCase):
 
     def test_mismatched_brace_matching(self):
         text = "foo {subfoo {subsubfoo { subsubsubfoo }}"
-        with self.assertRaises(i17on.UnbalancedBraces):
+        with self.assertRaises(translator.UnbalancedBraces):
             self.t.outer_braces(text)
-        with self.assertRaises(i17on.UnbalancedBraces):
+        with self.assertRaises(translator.UnbalancedBraces):
             self.t.outer_braces('{ foo')
-        with self.assertRaises(i17on.UnbalancedBraces):
+        with self.assertRaises(translator.UnbalancedBraces):
             self.t.outer_braces('foo }')
 
     def test_true_condition(self):
