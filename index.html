@@ -38,6 +38,10 @@
 		font-style: normal;
 	}
 
+	#stage {
+		height: 500px;
+	}
+
 	#stage .output .render {
 		width: 100%;
 	}
@@ -140,6 +144,18 @@
 		overflow: hidden;
 	}
 
+	table {
+		margin: 10px 0 15px 0;
+		border-collapse: collapse;
+	}
+	td,th {	
+		border: 1px solid #ddd;
+		padding: 3px 10px;
+	}
+	th {
+		padding: 5px 10px;	
+	}
+
 </style>
 
 <h1 id="title">i<span class="n">17</span>on</h1>
@@ -154,6 +170,7 @@
 	<p><em>i17on</em> is <span class="complex">an <strong>intra</strong>nationalization engine optimized for the output of dynamic documentation</span><span class="tech">a <em><strong>Markdown</strong></em>-based document system you can program</span><span class="default">a software package for dynamic text documents</span>.</p>
 
 	<p>Check it out on <a href="http://github.com/Yuffster/i17on">GitHub</a>.</p>
+	<p><a href="#full">Full Documentation</a></p>
 
 	<p class="hide-code"><a href="#">Hide example code.</a></p>
 	<p class="show-code"><a href="#">Show example code.</a></p>
@@ -190,6 +207,446 @@ Check it out on [GitHub](http://github.com/Yuffster/i17on).
 	</div>
 
 </div>
+
+<article>
+<h1 id="full">Full Documentation</h1>
+
+<p>i17on is a text preprocessor which allows you to write dynamic documents using a simple tag-based language.</p>
+
+<p>You can write your document once in i17on, then disable and enable tags as necessary to tailor the text to a wide variety of target audiences.</p>
+
+<p>i17on intelligently ensures that the whitespace of your document is normalized for English sentences and paragraphs.  It's also Markdown-aware, meaning that you can include lists, code, headings, <em>bold</em> and <em>italicised</em> text, and many other features which will work in the way you expect.</p>
+
+<p>Other formats can also be used, such as HTML.</p>
+
+<p>Currently the output of the compiler is provided as the raw processed document, which can be sent to other libraries such as pandoc for proper
+formatting.</p>
+
+<h2>Installation</h2>
+
+<h3>From Git</h3>
+
+<pre><code>git checkout git@github.com:Yuffster/i17on.git
+cd i17on
+python setup.py install
+</code></pre>
+
+<h3>Using Pip</h3>
+
+<pre><code>pip install i17on
+</code></pre>
+
+<h2>Usage</h2>
+
+<p>The setup.py script will provide you with an i17on command.</p>
+
+<p>You can also call the script without installing by typing <code>python -m i17on</code> from the root directory of this repository.</p>
+
+<p>The <code>i17on</code> command takes the input file as its first parameter.  The rest of the parameters are a list of tags which will be set to <code>True</code> for the purpose of output generation.</p>
+
+<pre><code>i17on input.md foo bar bizz
+</code></pre>
+
+<h3>stdin</h3>
+
+<p>You can also use stdin instead.</p>
+
+<pre><code>cat input.md | i17on foo bar bizz
+</code></pre>
+
+<h3>debug</h3>
+
+<p>The debug mode can be enabled by using <code>--debug</code>, and will output the AST and other helpful information for resolving issues with a particular input file, or the library itself.</p>
+
+<p>It can be placed before, after, or in the middle of tags.</p>
+
+<pre><code>i17on input.md --debug
+</code></pre>
+
+<h2>Syntax Documentation</h2>
+
+<h3>Dynamic tags</h3>
+
+<p>The most basic syntax of i17on is to use a tag, marked by curly braces.</p>
+
+<p>The string of text preceeding the colon is the conditional, in this case just one tag.  The text will show up if foo is set to true.</p>
+
+<pre><code>Hello {foo:world}
+</code></pre>
+
+<p>If you pass this input through i17on, you'll get the following output, based on whether or not the <code>foo</code> tag is set.</p>
+
+<table>
+<thead>
+<tr>
+<th> foo    </th>
+<th> output        </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False  </td>
+<td> Hello         </td>
+</tr>
+<tr>
+<td> True   </td>
+<td> Hello world   </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Branches</h3>
+
+<p>Additional conditionals can be added to a single tag by using the <code>|-</code> (branch) separator.</p>
+
+<pre><code>Hello {foo:this is foo|-bar:this is bar}.
+</code></pre>
+
+<p>This is very similar to a standard if/else statement.  For example, the document above could also be described like this:</p>
+
+<p><code>python
+if foo:
+    print("foo")
+elif bar:
+    print("bar")
+</code></p>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello.                     </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello this is foo.         </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello this is bar.         </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello this is foo.         </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Notice that if <code>foo</code> and <code>bar</code> are True, it will output the conditional branch for <code>foo</code> and stop before checking for other matching conditions.</p>
+
+<h3>Default branches</h3>
+
+<p>If no condition is provided for a branch, it will always be evaluated as True.  This allows you to add a default branch to be executed if none of the preceding conditions are True.</p>
+
+<pre><code>Hello {foo:this is foo|-bar:this is bar|-world}.
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello world.               </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello this is foo.         </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello this is bar.         </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello this is foo.         </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>If we move the default statement to the middle of our tag, we'll get "Hello world" regardless of the value of <code>bar</code>.</p>
+
+<pre><code>Hello {foo:this is foo|-world|-bar:this is bar}.
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello world.               </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello this is foo.         </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> <strong>Hello world.</strong>           </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello this is foo.         </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Conditional Clauses</h3>
+
+<h4>AND</h4>
+
+<p>You can combine conditions using a comma, in which case all of them have to be True.  For example, <code>foo,bar</code> is analogous to <code>if foo and bar</code> in normal code.</p>
+
+<pre><code>Hello {foo,bar:foo and bar}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello foo and bar          </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>This is analogous to saying <code>if foo and bar</code> in normal code.</p>
+
+<h4>OR</h4>
+
+<p>You can combine conditional clauses using the semicolon operator, in which case all of them have to be True.</p>
+
+<p><code>foo;bar</code> is analogous to <code>if foo or bar</code>, and <code>foo,bar;bizz</code> is analogous to <code>if (foo and bar) or (bizz)</code>.</p>
+
+<pre><code>Hello {foo;bar:foo or bar}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello foo or bar           </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello foo or bar           </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello foo or bar           </td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>Negation</h4>
+
+<p>Prepending a tag with an exclaimation point (!) will negate that tag.</p>
+
+<pre><code>Hello {foo,!bar:foo and not bar}
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello foo and not bar      </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello                      </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello                      </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Whitespace</h3>
+
+<p>In a more complex document, you might want to nest arbitrary whitespace.  The compiler is designed to intelligently discard unnecessary spacing.</p>
+
+<p>Here, we have more readable spacing, which will produce the same output as our earlier example.</p>
+
+<p>Work is ongoing to ensure that the compiled document conforms to expectations concerning English grammar, as well as Markdown specifics, such as indented lists and code examples.</p>
+
+<pre><code>Hello {
+    foo:
+        this is foo
+    |-bar:
+        this is bar
+    |-
+        world
+}.
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello world.               </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello this is foo.         </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello this is bar.         </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello this is foo.         </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Nesting</h3>
+
+<p>Tags can be nested within other tags.</p>
+
+<pre><code>Hello {
+    foo:
+        this is foo {bar:and bar}
+    |-
+        world
+}.
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th> foo      </th>
+<th> bar      </th>
+<th> output                     </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> False    </td>
+<td> False    </td>
+<td> Hello world.               </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> False    </td>
+<td> Hello this is foo.         </td>
+</tr>
+<tr>
+<td> False    </td>
+<td> True     </td>
+<td> Hello this is bar.         </td>
+</tr>
+<tr>
+<td> True     </td>
+<td> True     </td>
+<td> Hello this is foo and bar. </td>
+</tr>
+</tbody>
+</table>
+</article>
+
 
 <script>
 
