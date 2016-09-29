@@ -10,7 +10,6 @@ def main(stdout=None, argv=None):
     Uses sys to grab the command-line args and normalizes them for
     execution.
     """
-
     stdout = stdout or sys.stdout
     argv = argv or sys.argv
 
