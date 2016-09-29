@@ -452,7 +452,8 @@ class TranslatorTest(unittest.TestCase):
         self.assertTranslation(text, [], "# *Heading* and then other stuff.")
         text = '# *Heading* and then\n{\n\nfoo:\n\t\tsome stuff}\nother stuff.'
         self.assertTranslation(text, [], "# *Heading* and then other stuff.")
-        text = 'hi\n*{foo:hello|-world}*\n{foo:how are you}'
+        text = '## {foo:hello|-world}'
+        self.assertTranslation(text, [], "## world")
         return  # TODO
         # We're just... not going to deal with these cases right now.
         # How the hell is Markdown even a thing that exists?
