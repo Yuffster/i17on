@@ -8,7 +8,7 @@ debug_all = False  # Will override local debug settings.
 def translate(text, tags=None):
 	t = Translator()
 	if tags is not None:
-		t.add_tags(*tags)
+		t.add_tag(*tags)
 	return t.translate(text)
 
 
