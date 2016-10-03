@@ -53,8 +53,8 @@ def execute(text, argv=None):
     flags = []
     tags = []
     for arg in argv:
-        if arg[0:1] == '--':
-            flags.append(arg[1:])
+        if arg[0:2] == '--':
+            flags.append(arg[2:])
         else:
             tags.append(arg)
 
